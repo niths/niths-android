@@ -1,7 +1,10 @@
 package main.java.no.niths;
 
 import android.app.Application;
+import android.content.Context;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import no.niths.android.R;
 import org.springframework.security.crypto.encrypt.AndroidEncryptors;
 import org.springframework.social.connect.ConnectionRepository;
@@ -26,5 +29,11 @@ public class MainApplication extends Application {
     // ***************************************
     @Override
     public void onCreate() {
+    }
+
+    public boolean isOnline(){
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        return ni != null;
     }
 }

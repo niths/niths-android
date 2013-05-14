@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import main.java.no.niths.domain.Student;
 import main.java.no.niths.services.TokenBundle;
 import main.java.no.niths.services.domain.StudentsServiceImpl;
 import main.java.no.niths.services.domain.interfaces.StudentsService;
+import main.java.no.niths.views.activities.superclasses.AbstractTokenConsumerActivity;
 import no.niths.android.R;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -45,7 +47,9 @@ public class ProfileFragment extends Fragment {
     private boolean destroyed = false;
     private Context context;
     private TextView name, email, description;
+    private Button update;
     private Student user;
+    AbstractTokenConsumerActivity activity;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -54,6 +58,7 @@ public class ProfileFragment extends Fragment {
         name = (TextView) view.findViewById(R.id.profile_page_nametext);
         email = (TextView) view.findViewById(R.id.profile_page_emailtext);
         description = (TextView) view.findViewById(R.id.profile_page_descriptiontext);
+        update = (Button) view.findViewById(R.id.profile_page_update_button);
         description.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,6 +90,12 @@ public class ProfileFragment extends Fragment {
                 editable.show();
             }
         });
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new UpdateProfileTask().execute(user);
+            }
+        });
     }
 
     @Override
@@ -97,7 +108,10 @@ public class ProfileFragment extends Fragment {
         super.onResume();
 
         context = getActivity();
-        new FetchProfileTask().execute();
+        activity = (AbstractTokenConsumerActivity) getActivity();
+        if (activity.isOnline()){
+            new FetchProfileTask().execute();
+        }
     }
 
     private void showUserInfo(Student profile) {
@@ -194,7 +208,6 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(context, "Something went wrong while fetching the profile : " + token, Toast.LENGTH_LONG).show();
             } else {
                 user = profile;
-                new UpdateProfileTask().execute(profile);
                 showUserInfo(profile);
             }
         }
