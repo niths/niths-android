@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+             android:id="@+id/profile_page_nametext_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_page_name_label"
+                android:id="@+id/profile_page_nametext_label"
+                android:layout_weight="1"
+                />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/profile_page_nametext"
+            android:layout_weight="1"
+           />
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/profile_page_bursdagtext_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            android:layout_below="@id/profile_page_nametext_wrapper">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_page_bursdag_label"
+                android:id="@+id/profile_page_nametext_label"
+                android:layout_weight="1"
+                />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/profile_page_bursdag_editable"
+                android:layout_weight="1"
+                />
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_below="@id/profile_page_bursdagtext_wrapper"
+            android:id="@+id/profile_page_emailtext_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_page_email_label"
+                android:id="@+id/profile_page_emailtext_label"
+                android:layout_weight="1"
+                />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/profile_page_emailtext"
+                android:layout_weight="1"
+                />
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_below="@id/profile_page_emailtext_wrapper"
+            android:id="@+id/profile_page_descriptiontext_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_page_description_label"
+                android:id="@+id/profile_page_descriptiontext_label"
+                android:layout_weight="1"
+                />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/profile_page_descriptiontext"
+                android:layout_weight="1"
+                android:clickable="true" android:lines="5"/>
+    </LinearLayout>
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_page_oppdater_buttontext"
+            android:id="@+id/profile_page_update_button"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/profile_page_descriptiontext_wrapper"
+            android:visibility="visible"/>
+
+</RelativeLayout>

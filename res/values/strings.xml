@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">niths-android</string>
+    <string name="google_description">Her kan du koble deg til hvis du ikke allerede er det, eller logge ut hvis du er.
+        Er du logget inn kan du se profilen din
+    </string>
+    <string name="hovedside_tab_title">Hovedside</string>
+    <string name="profil_tab_title">Profil</string>
+    <string name="profile_page_email_label">Email:</string>
+    <string name="profile_page_bursdag_label">Bursdag:</string>
+    <string name="profile_page_name_label">Navn:</string>
+    <string name="profile_page_description_label">Beskrivelse:</string><string name="profile_page_oppdater_buttontext">Oppdater</string>
+    <string name="choose_account">Velg nith konto</string>
+    <string name="account_chosen">Konto valgt</string>
+</resources>
