@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import main.java.no.niths.domain.Student;
+import main.java.no.niths.domain.school.Student;
 import no.niths.android.R;
 
 /**

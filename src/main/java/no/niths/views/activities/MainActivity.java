@@ -21,6 +21,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import main.java.no.niths.views.activities.superclasses.AbstractTokenConsumerActivity;
+import main.java.no.niths.views.fragments.faddergruppe.FaddergruppeFragment;
 import main.java.no.niths.views.listeners.TabListener;
 import main.java.no.niths.views.fragments.Mainpage;
 import main.java.no.niths.views.fragments.ProfileFragment;
@@ -34,8 +35,7 @@ import java.util.List;
  */
 public class MainActivity extends AbstractTokenConsumerActivity {
 
-    ActionBar.Tab mainTab;
-    ActionBar.Tab profileTab;
+    ActionBar.Tab mainTab, profileTab, faddergruppeTab;
     private List<Fragment> fragments;
     private AccountManager accountManager;
     private Account account;
@@ -58,10 +58,12 @@ public class MainActivity extends AbstractTokenConsumerActivity {
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         mainTab = actionBar.newTab().setText(getString(R.string.hovedside_tab_title)).setTabListener(new TabListener<Mainpage>(this, "mainpage", Mainpage.class));
-        profileTab = actionBar.newTab().setText(getString(R.string.profil_tab_title)).setTabListener(new TabListener<ProfileFragment>(this, "mainpage", ProfileFragment.class));
+        profileTab = actionBar.newTab().setText(getString(R.string.profil_tab_title)).setTabListener(new TabListener<ProfileFragment>(this, "profil", ProfileFragment.class));
+        faddergruppeTab = actionBar.newTab().setText(getString(R.string.profil_tab_title)).setTabListener(new TabListener<FaddergruppeFragment>(this, "faddergrupper", FaddergruppeFragment.class));
 
         actionBar.addTab(mainTab);
         actionBar.addTab(profileTab);
+        actionBar.addTab(faddergruppeTab);
     }
 
     @Override

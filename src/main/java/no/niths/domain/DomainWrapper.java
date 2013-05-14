@@ -1,11 +1,12 @@
-package main.java.no.niths.services.domain.interfaces;
+package main.java.no.niths.domain;
 
 /**
  * Created with IntelliJ IDEA.
  * User: elotin
- * Date: 12.05.13
- * Time: 12:41
+ * Date: 14.05.13
+ * Time: 17:37
  * To change this template use File | Settings | File Templates.
  */
-public interface FadderService {
+public class DomainWrapper<T> {
+    public T value;
 }

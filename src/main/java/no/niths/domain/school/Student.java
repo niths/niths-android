@@ -1,5 +1,6 @@
-package main.java.no.niths.domain;
+package main.java.no.niths.domain.school;
 
+import main.java.no.niths.domain.DomainObject;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -12,7 +13,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Student {
+public class Student implements DomainObject {
     @JsonProperty
     Long id;
 

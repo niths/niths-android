@@ -18,21 +18,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import main.java.no.niths.MainApplication;
-import main.java.no.niths.domain.SessionToken;
-import main.java.no.niths.domain.Student;
+import main.java.no.niths.domain.school.Student;
 import main.java.no.niths.services.TokenBundle;
-import main.java.no.niths.services.domain.StudentsServiceImpl;
-import main.java.no.niths.services.domain.interfaces.StudentsService;
+import main.java.no.niths.services.auth.AuthService;
+import main.java.no.niths.services.auth.AuthServiceImpl;
+import main.java.no.niths.services.domain.school.StudentsServiceImpl;
 import main.java.no.niths.views.activities.superclasses.AbstractTokenConsumerActivity;
 import no.niths.android.R;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.Collections;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,13 +35,13 @@ import java.util.Collections;
  */
 public class ProfileFragment extends Fragment {
     protected static final String TAG = ProfileFragment.class.getSimpleName();
+    AbstractTokenConsumerActivity activity;
     private ProgressDialog progressDialog;
     private boolean destroyed = false;
     private Context context;
     private TextView name, email, description;
     private Button update;
     private Student user;
-    AbstractTokenConsumerActivity activity;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -109,8 +101,8 @@ public class ProfileFragment extends Fragment {
 
         context = getActivity();
         activity = (AbstractTokenConsumerActivity) getActivity();
-        if (activity.isOnline()){
-            new FetchProfileTask().execute();
+        if (activity.isOnline()) {
+            new LoginTask().execute();
         }
     }
 
@@ -151,7 +143,7 @@ public class ProfileFragment extends Fragment {
     // ***************************************
     // Private classes
     // ***************************************
-    private class FetchProfileTask extends AsyncTask<Void, Void, Student> {
+    private class LoginTask extends AsyncTask<Void, Void, Student> {
 
         private Exception exception;
         private String token;
@@ -170,44 +162,16 @@ public class ProfileFragment extends Fragment {
 
         @Override
         protected Student doInBackground(Void... params) {
+            AuthService auth = new AuthServiceImpl();
 
-            Student student = null;
-            try {
-                RestTemplate template = new RestTemplate();
+            return auth.login(token, context);
 
-                HttpHeaders headers = new HttpHeaders();
-                headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-                SessionToken token1 = new SessionToken();
-                token1.setToken(token);
-                HttpEntity<SessionToken> entity = new HttpEntity<SessionToken>(token1, headers);
-
-                template.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
-                ResponseEntity<Student> result = template.postForEntity(context.getString(R.string.server_url) + "/auth/login", entity, Student.class);
-
-                Log.d(TAG, result.getBody().toString());
-                Log.d(TAG, result.getHeaders().get("session-token").get(0).toString());
-                Log.d(TAG, result.getStatusCode().toString());
-                niths_token = result.getHeaders().get("session-token").get(0).toString();
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString(niths_token_key, niths_token);
-                editor.commit();
-                Log.d("NITHS_KALL_HEADER", niths_token);
-                student = result.getBody();
-
-            } catch (Exception e) {
-                Log.e(TAG, e.getLocalizedMessage(), e);
-                exception = e;
-            }
-            return student;
         }
 
         @Override
         protected void onPostExecute(Student profile) {
             dismissProgressDialog();
-            if (profile == null || exception != null) {
-                Toast.makeText(context, "Something went wrong while fetching the profile : " + token, Toast.LENGTH_LONG).show();
-            } else {
-                user = profile;
+            if (profile != null){
                 showUserInfo(profile);
             }
         }
@@ -232,18 +196,21 @@ public class ProfileFragment extends Fragment {
 
         @Override
         protected Student doInBackground(Student... students) {
-            StudentsService service = new StudentsServiceImpl(bundle);
+            StudentsServiceImpl service = new StudentsServiceImpl(bundle);
             students[0].setDescription("Oppdatert profuhuihilen");
-            return service.updateStudent(students[0]);
+            service.update(students[0]);
+            return service.getById(students[0].getId());
         }
 
         @Override
         protected void onPostExecute(Student student) {
             super.onPostExecute(student);
-            Toast.makeText(context, "Update successfull for student with mail: " + student.getEmail(), Toast.LENGTH_SHORT).show();
-            showUserInfo(student);
+            if (student != null) {
+                Toast.makeText(context, "Update successfull for student with mail: " + student.getEmail(), Toast.LENGTH_SHORT).show();
+                showUserInfo(student);
+            } else {
+                Toast.makeText(context, "Could not find student or update failed", Toast.LENGTH_SHORT).show();
+            }
         }
     }
-
-
 }

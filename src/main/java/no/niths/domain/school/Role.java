@@ -1,4 +1,4 @@
-package main.java.no.niths.domain;
+package main.java.no.niths.domain.school;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
