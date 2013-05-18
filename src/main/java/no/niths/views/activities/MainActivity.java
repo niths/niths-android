@@ -15,18 +15,22 @@
  */
 package main.java.no.niths.views.activities;
 
-import android.accounts.*;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import main.java.no.niths.views.activities.superclasses.AbstractTokenConsumerActivity;
-import main.java.no.niths.views.fragments.faddergruppe.FaddergruppeFragment;
-import main.java.no.niths.views.listeners.TabListener;
 import main.java.no.niths.views.fragments.Mainpage;
-import main.java.no.niths.views.fragments.ProfileFragment;
 import no.niths.android.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,11 +39,14 @@ import java.util.List;
  */
 public class MainActivity extends AbstractTokenConsumerActivity {
 
-    ActionBar.Tab mainTab, profileTab, faddergruppeTab;
+    //ActionBar.Tab mainTab, profileTab, faddergruppeTab, eventsTab;
     private List<Fragment> fragments;
-    private AccountManager accountManager;
-    private Account account;
+    private String[] fragmentNames;
+    private String[] headers;
     private Context context;
+    private ListView sideMenu;
+    private DrawerLayout sideMenuLayout;
+    private ActionBarDrawerToggle drawerToggle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,27 +54,116 @@ public class MainActivity extends AbstractTokenConsumerActivity {
         setContentView(R.layout.main_activiy);
         context = this;
 
-        fragments = new ArrayList<Fragment>();
-        fragments.add(new Mainpage());
-        final ActionBar actionBar = getActionBar();
+        //fragments = new ArrayList<Fragment>();
+        //fragments.add(new Mainpage());
+        //final ActionBar actionBar = getActionBar();
+/*
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        mainTab = actionBar.newTab().setText(getString(R.string.hovedside_tab_title)).setTabListener(new TabListener<Mainpage>(this, "mainpage", Mainpage.class));
+        profileTab = actionBar.newTab().setText(getString(R.string.profil_tab_title)).setTabListener(new TabListener<ProfileFragment>(this, "profil", ProfileFragment.class));
+        faddergruppeTab = actionBar.newTab().setText(getString(R.string.faddergrupper_tab_title)).setTabListener(new TabListener<FaddergruppeListFragment>(this, "faddergrupper", FaddergruppeListFragment.class));
+        eventsTab = actionBar.newTab().setText(getString(R.string.events_tab_title)).setTabListener(new TabListener<EventListFragment>(this, "faddergrupper", EventListFragment.class));
+
+        actionBar.addTab(mainTab);
+        actionBar.addTab(profileTab);
+        actionBar.addTab(faddergruppeTab);
+        actionBar.addTab(eventsTab);
+        */
+
+
 
         if (isOnline()){
             refreshToken();
         }
 
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        headers = getResources().getStringArray(R.array.side_menu_title);
+        fragmentNames = getResources().getStringArray(R.array.side_menu_fragments);
 
-        mainTab = actionBar.newTab().setText(getString(R.string.hovedside_tab_title)).setTabListener(new TabListener<Mainpage>(this, "mainpage", Mainpage.class));
-        profileTab = actionBar.newTab().setText(getString(R.string.profil_tab_title)).setTabListener(new TabListener<ProfileFragment>(this, "profil", ProfileFragment.class));
-        faddergruppeTab = actionBar.newTab().setText(getString(R.string.profil_tab_title)).setTabListener(new TabListener<FaddergruppeFragment>(this, "faddergrupper", FaddergruppeFragment.class));
+        try {
+            fragments = getFragmentsForNames(fragmentNames);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+        sideMenu = (ListView)findViewById(R.id.left_drawer);
+        sideMenuLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerToggle = new ActionBarDrawerToggle(
+                this,
+                sideMenuLayout,
+                R.drawable.ic_drawer,
+                R.string.side_menu_open_description,
+                R.string.side_menu_close_description
 
-        actionBar.addTab(mainTab);
-        actionBar.addTab(profileTab);
-        actionBar.addTab(faddergruppeTab);
+        ){
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                getActionBar().setTitle("NITHS");
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                getActionBar().setTitle("Meny");
+            }
+        };
+        sideMenuLayout.setDrawerListener(drawerToggle);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
+        sideMenu.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, headers));
+        sideMenu.setOnItemClickListener(new DrawerItemClickListener());
+
     }
 
     @Override
     protected void newTokenAquired() {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    private List<Fragment> getFragmentsForNames(String[] fragmentNames) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        List<Fragment> fragmentList = new ArrayList<Fragment>();
+        for (int i = 0; i < fragmentNames.length; i++) {
+            fragmentList.add((Fragment) Class.forName(fragmentNames[i]).newInstance());
+        }
+        return fragmentList;
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            selectItem(position);
+        }
+
+        private void selectItem(int position) {
+            Fragment selectedFragemnt = fragments.get(position);
+            FragmentManager manager = getFragmentManager();
+            manager.beginTransaction()
+                    .replace(R.id.fragment_continer, selectedFragemnt, headers[position])
+                    .commit();
+            sideMenu.setItemChecked(position, true);
+            setTitle(headers[position]);
+            sideMenuLayout.closeDrawer(sideMenu);
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerToggle.onOptionsItemSelected(item)){
+            return true;
+        }
+
+
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
  * Time: 15:15
  * To change this template use File | Settings | File Templates.
  */
-public interface FaddergruppeService {
+public interface FaddergruppeService extends GenericCrudServiceInterface<Faddergruppe> {
     public Faddergruppe getFaddergruppeForStudent(Student student);
 
     public List<Faddergruppe> getFaddergrupperForLeader(Student leader);

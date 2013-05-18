@@ -3,6 +3,7 @@ package main.java.no.niths.services.domain.school;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import main.java.no.niths.MainApplication;
 import main.java.no.niths.domain.school.Faddergruppe;
 import main.java.no.niths.domain.school.Student;
 import main.java.no.niths.services.TokenBundle;
@@ -31,13 +32,10 @@ import main.java.no.niths.services.domain.school.superclass.*;
  */
 public class FaddergruppeServiceImpl extends GenericCrudServiceOperator<Faddergruppe> implements FaddergruppeService {
 
-    RestTemplate template;
-    HttpHeaders headers;
-    private TokenBundle tokens;
     private String ENDPOINTURL =  "http://hmeide.com:8085/fadder";
 
-    public FaddergruppeServiceImpl(TokenBundle tokens) {
-        super(tokens);
+    public FaddergruppeServiceImpl(MainApplication application) {
+        super(application);
     }
 
     @Override
@@ -48,6 +46,11 @@ public class FaddergruppeServiceImpl extends GenericCrudServiceOperator<Faddergr
     @Override
     public Type getType(){
         return  new TypeToken<Faddergruppe>(){}.getType();
+    }
+
+    @Override
+    public Type getListType() {
+        return  new TypeToken<Collection<Faddergruppe>>(){}.getType();
     }
 
 

@@ -41,7 +41,10 @@ public abstract class AbstractTokenConsumerActivity extends AbstractAsyncActivit
 
     private void checkAccounts() {
         Intent selectAccount = getSelectAccountIntent();
-        startActivityForResult(selectAccount, ACCOUNTSELECT_CODE);
+        // Får vi null tilbake fra selectAccount betyr det at vi har funnet en account i listen.
+        if (selectAccount != null){
+            startActivityForResult(selectAccount, ACCOUNTSELECT_CODE);
+        }
     }
 
     @Override
@@ -103,7 +106,12 @@ public abstract class AbstractTokenConsumerActivity extends AbstractAsyncActivit
                 filteredAccounts.add(unfilteredAccount);
             }
         }
-        return AccountManager.newChooseAccountIntent(null, filteredAccounts, null, true, "Velg en nith konto eller legg til en på enheten", getString(R.string.google_auth_scope), null, null);
+        if (filteredAccounts.size() == 1) {
+            account = filteredAccounts.get(0);
+        } else {
+            return AccountManager.newChooseAccountIntent(null, filteredAccounts, null, true, "Velg en nith konto eller legg til en på enheten", getString(R.string.google_auth_scope), null, null);
+        }
+        return null;
     }
 
     private class OnTokenAcquired implements AccountManagerCallback<Bundle> {

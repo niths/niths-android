@@ -12,6 +12,6 @@ import java.util.List;
  * Time: 12:38
  * To change this template use File | Settings | File Templates.
  */
-public interface StudentsService extends GenericCRUDActions<Student> {
+public interface StudentsService extends GenericCrudServiceInterface<Student> {
     public Student getStudentByEmail(String email);
 }

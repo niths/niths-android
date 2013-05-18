@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
     <fragment
         android:id="@+id/faddergrupper_list_fragment"
-        android:name="main.java.no.niths.views.fragments.faddergruppe.FaddergrupperListFragment"
+        android:name="main.java.no.niths.views.fragments.faddergruppe.EventsListFragment"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
+        android:layout_height="fill_parent"
+        tools:layout="@layout/listview_item_row"/>
 
 </LinearLayout>

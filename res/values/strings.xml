@@ -12,4 +12,8 @@
     <string name="profile_page_description_label">Beskrivelse:</string><string name="profile_page_oppdater_buttontext">Oppdater</string>
     <string name="choose_account">Velg nith konto</string>
     <string name="account_chosen">Konto valgt</string>
+    <string name="faddergrupper_tab_title">Faddergrupper</string>
+    <string name="events_tab_title">Events</string>
+    <string name="side_menu_open_description">Open Menu</string>
+    <string name="side_menu_close_description">Close Menu</string>
 </resources>

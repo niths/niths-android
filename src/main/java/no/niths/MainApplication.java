@@ -2,17 +2,17 @@ package main.java.no.niths;
 
 import android.app.Application;
 import android.content.Context;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.Volley;
+import main.java.no.niths.services.TokenBundle;
 import no.niths.android.R;
-import org.springframework.security.crypto.encrypt.AndroidEncryptors;
-import org.springframework.social.connect.ConnectionRepository;
-import org.springframework.social.connect.sqlite.SQLiteConnectionRepository;
-import org.springframework.social.connect.sqlite.support.SQLiteConnectionRepositoryHelper;
-import org.springframework.social.connect.support.ConnectionFactoryRegistry;
-import org.springframework.social.google.api.Google;
-import org.springframework.social.google.connect.GoogleConnectionFactory;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,17 +23,41 @@ import org.springframework.social.google.connect.GoogleConnectionFactory;
  */
 public class MainApplication extends Application {
     public static String token;
+    private ImageLoader loader;
+    private RequestQueue requestQueue;
+
+    public RequestQueue getRequestQueue() {
+        return requestQueue;
+    }
+
+    public void setRequestQueue(RequestQueue requestQueue) {
+        this.requestQueue = requestQueue;
+    }
 
     // ***************************************
     // Application Methods
     // ***************************************
     @Override
     public void onCreate() {
+        requestQueue = Volley.newRequestQueue(this);
     }
 
-    public boolean isOnline(){
+    public boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         return ni != null;
+    }
+
+    public TokenBundle getTokenBundle() {
+        TokenBundle bundle = null;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String sessiontoken = preferences.getString(getString(R.string.niths_token_key), null);
+        if (sessiontoken != null) {
+            bundle = new TokenBundle();
+            bundle.setSessionToken(sessiontoken);
+            bundle.setApplicationToken(getString(R.string.niths_application_token));
+            bundle.setDeveloperToken(getString(R.string.niths_developer_token));
+        }
+        return bundle;
     }
 }

@@ -3,6 +3,7 @@ package main.java.no.niths.services.domain.school;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import main.java.no.niths.MainApplication;
 import main.java.no.niths.domain.school.Student;
 import main.java.no.niths.services.TokenBundle;
 import main.java.no.niths.services.domain.school.interfaces.*;
@@ -30,8 +31,8 @@ import java.util.*;
 public class StudentsServiceImpl extends GenericCrudServiceOperator<Student> implements StudentsService {
     private String ENDPOINTURL = "http://hmeide.com:8085/students";
 
-    public StudentsServiceImpl(TokenBundle tokens) {
-        super(tokens);
+    public StudentsServiceImpl(MainApplication application) {
+        super(application);
     }
 
     @Override
@@ -47,5 +48,10 @@ public class StudentsServiceImpl extends GenericCrudServiceOperator<Student> imp
     @Override
     public Type getType(){
         return  new TypeToken<Student>(){}.getType();
+    }
+
+    @Override
+    public Type getListType() {
+        return  new TypeToken<Collection<Student>>(){}.getType();
     }
 }

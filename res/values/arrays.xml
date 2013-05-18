@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="side_menu_title">
+        <item>Hjem</item>
+        <item>Profil</item>
+        <item>Faddergrupper</item>
+        <item>Events</item>
+    </string-array>
+
+    <string-array name="side_menu_fragments">
+        <item>main.java.no.niths.views.fragments.Mainpage</item>
+        <item>main.java.no.niths.views.fragments.ProfileFragment</item>
+        <item>main.java.no.niths.views.fragments.faddergruppe.FaddergruppeListFragment</item>
+        <item>main.java.no.niths.views.fragments.Events.EventListFragment</item>
+    </string-array>
+</resources>

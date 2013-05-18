@@ -16,14 +16,14 @@ import no.niths.android.R;
  * Time: 14:26
  * To change this template use File | Settings | File Templates.
  */
-    public class StudentAdapter extends ArrayAdapter<Student>{
+    public class StudentListAdapter extends ArrayAdapter<Student>{
 
         Context context;
         int layoutResourceId;
         Student data[] = null;
         LayoutInflater inflater;
 
-        public StudentAdapter(Context context, int layoutResourceId, Student[] data, LayoutInflater inflater) {
+        public StudentListAdapter(Context context, int layoutResourceId, Student[] data, LayoutInflater inflater) {
             super(context, layoutResourceId, data);
             this.layoutResourceId = layoutResourceId;
             this.context = context;

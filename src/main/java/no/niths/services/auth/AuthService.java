@@ -1,6 +1,7 @@
 package main.java.no.niths.services.auth;
 
 import android.content.Context;
+import com.android.volley.Response;
 import main.java.no.niths.domain.school.Student;
 
 /**
@@ -11,5 +12,5 @@ import main.java.no.niths.domain.school.Student;
  * To change this template use File | Settings | File Templates.
  */
 public interface AuthService {
-    Student login(String googleToken, Context context);
+    void login(String googleToken, Response.Listener<Student> listener, Response.ErrorListener errorListener);
 }

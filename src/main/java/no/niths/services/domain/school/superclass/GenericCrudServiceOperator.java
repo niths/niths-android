@@ -1,15 +1,20 @@
 package main.java.no.niths.services.domain.school.superclass;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import main.java.no.niths.domain.DomainWrapper;
+import main.java.no.niths.MainApplication;
 import main.java.no.niths.services.TokenBundle;
-import main.java.no.niths.services.domain.school.interfaces.*;
+import main.java.no.niths.services.domain.school.interfaces.GenericCrudServiceInterface;
+import main.java.no.niths.services.utils.GsonRequestBuilder;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -24,10 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,18 +42,30 @@ public abstract class GenericCrudServiceOperator<T> implements GenericCrudServic
 
     RestTemplate template;
     HttpHeaders headers;
+    Map<String, String> mapHeaders;
     private TokenBundle tokens;
+    private RequestQueue queue;
 
-    public GenericCrudServiceOperator(TokenBundle tokens) {
+    public GenericCrudServiceOperator(MainApplication application) {
         template = new RestTemplate();
+        mapHeaders = new HashMap<String, String>();
         headers = new HttpHeaders();
+        tokens = application.getTokenBundle();
         headers.add("Session-token", tokens.getSessionToken());
         headers.add("Developer-token", tokens.getDeveloperToken());
         headers.add("Application-token", tokens.getApplicationToken());
         headers.setAccept(Collections.<MediaType>singletonList(MediaType.APPLICATION_JSON));
-        this.tokens = tokens;
+        this.tokens = application.getTokenBundle();
+
+
+        mapHeaders.put("Session-token", tokens.getSessionToken());
+        mapHeaders.put("Developer-token", tokens.getDeveloperToken());
+        mapHeaders.put("Application-token", tokens.getApplicationToken());
+        mapHeaders.put("Content-Type", "application/json");
+
 
         template.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
+        this.queue = application.getRequestQueue();
     }
 
     //Generic konstruktør for request siden vi legger alltid til de samme headerene
@@ -75,48 +89,45 @@ public abstract class GenericCrudServiceOperator<T> implements GenericCrudServic
         return requestBase;
     }
 
-    public List<T> getAll() {
-        DefaultHttpClient client = new DefaultHttpClient();
+    public void getAll(Response.Listener<List<T>> listener, Response.ErrorListener errorListener) {
 
-        HttpGet httpGet = createGetHeader(HttpGet.class, getEndpoint());
-
-        ResponseHandler<String> responseHandler = new BasicResponseHandler();
-        try {
-            Gson gson = new Gson();
-            Type collectionType = new TypeToken<Collection<T>>() {
-            }.getType();
-            String json = client.execute(httpGet, responseHandler);
-            List<T> tResult = gson.fromJson(json, collectionType);
-            return tResult;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        GsonRequestBuilder<T> builder = new GsonRequestBuilder<T>();
+        builder.setUrl(getEndpoint())
+                .setListener(listener)
+                .setErrorListener(errorListener)
+        .setType(getListType());
+        getFromBuilder(builder);
     }
 
     @Override
-    public List getAll(int firstResult, int offset) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public void getAll(int firstResult, int offset, Response.Listener<List<T>> listener, Response.ErrorListener errorListener) {
+        String url = String.format(getEndpoint() + "/paginated/%d/%d", firstResult, offset);
+        GsonRequestBuilder<T> builder = new GsonRequestBuilder<T>();
+        builder.setUrl(url)
+                .setListener(listener)
+                .setErrorListener(errorListener)
+        .setType(getListType());
+        getFromBuilder(builder);
+    }
+
+    private void getFromBuilder(GsonRequestBuilder builder) {
+        builder.setType(getListType())
+        .setMethod(Request.Method.GET)
+                .setHeaders(mapHeaders)
+                .createGsonRequest();
+        queue.add(builder.createGsonRequest());
+        queue.start();
     }
 
     @Override
-    public T getById(long id) {
-        DefaultHttpClient client = new DefaultHttpClient();
-        String url = String.format(Locale.getDefault(), getEndpoint() + "/%d", id);
-        HttpGet httpGet = createGetHeader(HttpGet.class, url);
-
-        ResponseHandler<String> responseHandler = new BasicResponseHandler();
-        T tResult = null;
-        try {
-            Gson gson = new Gson();
-            String json = client.execute(httpGet, responseHandler);
-
-            tResult = gson.fromJson(json, getType());
-            return tResult;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    public void getById(long id, Response.Listener<T> listener, Response.ErrorListener errorListener) {
+        String url = String.format(getEndpoint() + "/%d", id);
+        GsonRequestBuilder<T> builder = new GsonRequestBuilder<T>();
+        builder.setUrl(url)
+                .setListener(listener)
+                .setErrorListener(errorListener)
+                .setType(getType());
+        getFromBuilder(builder);
     }
 
     @Override
@@ -169,15 +180,9 @@ public abstract class GenericCrudServiceOperator<T> implements GenericCrudServic
         return 1;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    private  <T> T deserialize(String jsonString, Class<T> clazz) {
-        GsonBuilder builder = new GsonBuilder();
-        builder.setDateFormat("MM/dd/yy HH:mm:ss");
-
-        Gson gson = builder.create();
-        return gson.fromJson(jsonString, clazz);
-    }
-
     public abstract Type getType();
+
+    public abstract Type getListType();
 
     public abstract String getEndpoint();
 }

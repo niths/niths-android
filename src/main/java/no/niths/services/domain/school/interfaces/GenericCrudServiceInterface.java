@@ -1,5 +1,6 @@
 package main.java.no.niths.services.domain.school.interfaces;
 
+import com.android.volley.Response;
 import main.java.no.niths.domain.DomainObject;
 
 import java.util.List;
@@ -13,11 +14,11 @@ import java.util.List;
  */
 public interface GenericCrudServiceInterface<T> {
 
-    T getById(long id);
+    void getById(long id, Response.Listener<T> listener, Response.ErrorListener errorListener);
 
-    List<T> getAll();
+    void getAll(Response.Listener<List<T>> listener, Response.ErrorListener errorListener);
 
-    List<T>getAll(int firstResult, int offset);
+    void getAll(int startResult, int endResult, Response.Listener<List<T>> listener, Response.ErrorListener errorListener);
 
     boolean delete(long id);
 

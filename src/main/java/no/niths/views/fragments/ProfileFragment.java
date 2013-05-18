@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -16,13 +15,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import main.java.no.niths.MainApplication;
 import main.java.no.niths.domain.school.Student;
-import main.java.no.niths.services.TokenBundle;
 import main.java.no.niths.services.auth.AuthService;
 import main.java.no.niths.services.auth.AuthServiceImpl;
 import main.java.no.niths.services.domain.school.StudentsServiceImpl;
+import main.java.no.niths.services.domain.school.interfaces.StudentsService;
 import main.java.no.niths.views.activities.superclasses.AbstractTokenConsumerActivity;
 import no.niths.android.R;
 
@@ -42,6 +42,15 @@ public class ProfileFragment extends Fragment {
     private TextView name, email, description;
     private Button update;
     private Student user;
+    private MainApplication application;
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        application = (MainApplication) getActivity().getApplication();
+
+
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -70,7 +79,6 @@ public class ProfileFragment extends Fragment {
                                 String value = input.getText().toString();
                                 Log.d("INPUT FROM VIEW", value);
                                 user.setDescription(value);
-                                new UpdateProfileTask().execute(user);
                             }
                         })
                         .setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
@@ -79,13 +87,25 @@ public class ProfileFragment extends Fragment {
 
                             }
                         });
+                update.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        StudentsService studentsService = new StudentsServiceImpl(application);
+                        studentsService.getById(29, new Response.Listener<Student>() {
+                                    @Override
+                                    public void onResponse(Student students) {
+                                        showUserInfo(students);
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError volleyError) {
+                                        Log.e("VOLLEY_ERROR", volleyError.getLocalizedMessage(), volleyError);
+                                    }
+                                }
+                        );
+                    }
+                });
                 editable.show();
-            }
-        });
-        update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new UpdateProfileTask().execute(user);
             }
         });
     }
@@ -102,7 +122,21 @@ public class ProfileFragment extends Fragment {
         context = getActivity();
         activity = (AbstractTokenConsumerActivity) getActivity();
         if (activity.isOnline()) {
-            new LoginTask().execute();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            String token = preferences.getString(getApplicationContext().getString(R.string.google_token_key), "none");
+            AuthService authService = new AuthServiceImpl(application);
+            authService.login(token, new Response.Listener<Student>() {
+                        @Override
+                        public void onResponse(Student students) {
+                            showUserInfo(students);
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            Log.e("VOLLEY_ERROR", volleyError.getLocalizedMessage(), volleyError);
+                        }
+                    }
+            );
         }
     }
 
@@ -137,80 +171,6 @@ public class ProfileFragment extends Fragment {
     public void dismissProgressDialog() {
         if (this.progressDialog != null && !this.destroyed) {
             this.progressDialog.dismiss();
-        }
-    }
-
-    // ***************************************
-    // Private classes
-    // ***************************************
-    private class LoginTask extends AsyncTask<Void, Void, Student> {
-
-        private Exception exception;
-        private String token;
-        private String niths_token;
-        private SharedPreferences preferences;
-        private String niths_token_key;
-
-        @Override
-        protected void onPreExecute() {
-            showProgressDialog("Fetching profile...");
-            preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            niths_token_key = getApplicationContext().getString(R.string.niths_token_key);
-            token = preferences.getString(getApplicationContext().getString(R.string.google_token_key), "none");
-
-        }
-
-        @Override
-        protected Student doInBackground(Void... params) {
-            AuthService auth = new AuthServiceImpl();
-
-            return auth.login(token, context);
-
-        }
-
-        @Override
-        protected void onPostExecute(Student profile) {
-            dismissProgressDialog();
-            if (profile != null){
-                showUserInfo(profile);
-            }
-        }
-    }
-
-    private class UpdateProfileTask extends AsyncTask<Student, Void, Student> {
-
-        TokenBundle bundle;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();    //To change body of overridden methods use File | Settings | File Templates.
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            String sessiontoken = preferences.getString(getApplicationContext().getString(R.string.niths_token_key), null);
-            if (sessiontoken != null) {
-                bundle = new TokenBundle();
-                bundle.setSessionToken(sessiontoken);
-                bundle.setApplicationToken(getApplicationContext().getString(R.string.niths_application_token));
-                bundle.setDeveloperToken(getApplicationContext().getString(R.string.niths_developer_token));
-            }
-        }
-
-        @Override
-        protected Student doInBackground(Student... students) {
-            StudentsServiceImpl service = new StudentsServiceImpl(bundle);
-            students[0].setDescription("Oppdatert profuhuihilen");
-            service.update(students[0]);
-            return service.getById(students[0].getId());
-        }
-
-        @Override
-        protected void onPostExecute(Student student) {
-            super.onPostExecute(student);
-            if (student != null) {
-                Toast.makeText(context, "Update successfull for student with mail: " + student.getEmail(), Toast.LENGTH_SHORT).show();
-                showUserInfo(student);
-            } else {
-                Toast.makeText(context, "Could not find student or update failed", Toast.LENGTH_SHORT).show();
-            }
         }
     }
 }
