@@ -66,6 +66,7 @@ public class GsonRequestBuilder<T> {
     }
 
     public GsonRequest createGsonRequest() {
-        return new GsonRequest(url, type, headers, listener, errorListener, method, body);
+        GsonRequest request = new GsonRequest(url, type, headers, listener, errorListener, method, body);
+        return request;
     }
 }

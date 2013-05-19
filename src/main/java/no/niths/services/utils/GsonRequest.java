@@ -1,24 +1,30 @@
 package main.java.no.niths.services.utils;
 
 import com.android.volley.*;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.reflect.TypeToken;
 import main.java.no.niths.domain.school.Event;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 /**
  * Volley adapter for JSON requests that will be parsed into Java objects by Gson.
  */
 public class GsonRequest<T> extends Request<T> {
-    private final Gson gson = new Gson();
+    private final Gson gson;
     private final Map<String, String> headers;
     private final Listener<T> listener;
     private final Type type;
@@ -55,6 +61,9 @@ public class GsonRequest<T> extends Request<T> {
         this.listener = listener;
         this.type = type;
         mRequestBody = body;
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(DateTime.class, new DateTimeDeserializer());
+        gson = builder.create();
     }
 
     @Override
@@ -94,6 +103,21 @@ public class GsonRequest<T> extends Request<T> {
             VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
                     mRequestBody, PROTOCOL_CHARSET);
             return null;
+        }
+    }
+
+    //Deserializerer dato formatet som blir brukt på serveren over til DateTime
+
+    private class DateTimeDeserializer implements JsonDeserializer<DateTime> {
+        public DateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            Date date = null;
+            try {
+                date = new SimpleDateFormat("dd/MM/yyy-HH:mm").parse(json.getAsJsonPrimitive().getAsString());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return new DateTime(date);
         }
     }
 }

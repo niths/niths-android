@@ -1,11 +1,11 @@
 package main.java.no.niths.domain.school;
 
+import com.google.gson.annotations.SerializedName;
 import main.java.no.niths.domain.DomainObject;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.joda.time.DateTime;
 
-import java.util.Calendar;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,21 +17,25 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Event implements DomainObject {
 
-    @JsonProperty
+    @SerializedName("id")
     private long id;
-    @JsonProperty
+
+    @SerializedName("name")
     private String name;
-    @JsonProperty
+
+    @SerializedName("description")
     private String description;
-    @JsonProperty
-    private String startTime;
-    @JsonProperty
-    private String endTime;
-    @JsonProperty
+
+    @SerializedName("startTime")
+    private DateTime startTime;
+
+    @SerializedName("endTime")
+    private DateTime endTime;
+
+    @SerializedName("tags")
     private String tags;
-    @JsonProperty
-    private List<Committee> committees;
-    @JsonProperty
+
+    @SerializedName("location")
     private Location location;
 
     public String getName() {
@@ -58,14 +62,6 @@ public class Event implements DomainObject {
         this.tags = tags;
     }
 
-    public List<Committee> getCommittees() {
-        return committees;
-    }
-
-    public void setCommittees(List<Committee> committees) {
-        this.committees = committees;
-    }
-
     public Location getLocation() {
         return location;
     }
@@ -81,5 +77,21 @@ public class Event implements DomainObject {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public DateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(DateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public DateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(DateTime endTime) {
+        this.endTime = endTime;
     }
 }
