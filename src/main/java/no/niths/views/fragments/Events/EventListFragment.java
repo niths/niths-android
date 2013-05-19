@@ -5,8 +5,7 @@ import android.app.FragmentManager;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
+import android.view.*;
 import android.widget.ListView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -14,7 +13,10 @@ import main.java.no.niths.MainApplication;
 import main.java.no.niths.domain.school.Event;
 import main.java.no.niths.services.domain.school.EventServiceImpl;
 import main.java.no.niths.services.domain.school.interfaces.EventService;
+import main.java.no.niths.services.domain.school.superclass.GenericCrudServiceOperator;
 import main.java.no.niths.views.adapters.EventListAdapter;
+import main.java.no.niths.views.fragments.superclasses.RefreshableFragment;
+import main.java.no.niths.views.fragments.superclasses.RefreshableListFragment;
 import no.niths.android.R;
 
 import java.util.ArrayList;
@@ -27,11 +29,12 @@ import java.util.List;
  * Time: 15:02
  * To change this template use File | Settings | File Templates.
  */
-public class EventListFragment extends ListFragment {
+public class EventListFragment extends RefreshableListFragment<Event> {
 
     List<Event> events;
     MainApplication application;
     EventListAdapter adapter;
+    EventService eventService;
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -52,20 +55,14 @@ public class EventListFragment extends ListFragment {
     public void onStart() {
         super.onStart();
         application = (MainApplication) getActivity().getApplication();
-        EventService eventService = new EventServiceImpl((MainApplication) getActivity().getApplication());
-        eventService.getAll(new Response.Listener<List<Event>>() {
-                                          @Override
-                                          public void onResponse(List<Event> events) {
-                                              adapter.getData().addAll(events);
-                                              adapter.notifyDataSetChanged();
-                                          }
-                                      }, new Response.ErrorListener() {
-                                          @Override
-                                          public void onErrorResponse(VolleyError volleyError) {
-
-                                          }
-                                      }
-        );
+        eventService = new EventServiceImpl(application);
+        loadItems(new Response.Listener<List<Event>>() {
+            @Override
+            public void onResponse(List<Event> events) {
+                adapter.getData().addAll(events);
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -77,5 +74,25 @@ public class EventListFragment extends ListFragment {
         adapter = new EventListAdapter(inflater.getContext(), R.layout.listview_item_row, events, inflater);
         setListAdapter(adapter);
 
+    }
+
+
+
+
+    @Override
+    protected void refreshView(final MenuItem item) {
+        loadItems(new Response.Listener<List<Event>>() {
+            @Override
+            public void onResponse(List<Event> events) {
+                adapter.setData(events);
+                adapter.notifyDataSetChanged();
+                item.setActionView(null);
+            }
+        });
+    }
+
+    @Override
+    protected GenericCrudServiceOperator getService() {
+        return (GenericCrudServiceOperator) eventService;
     }
 }

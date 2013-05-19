@@ -1,21 +1,22 @@
 package main.java.no.niths.views.fragments.faddergruppe;
 
 import android.app.ListFragment;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.ListView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import main.java.no.niths.MainApplication;
+import main.java.no.niths.domain.school.Event;
 import main.java.no.niths.domain.school.Faddergruppe;
 import main.java.no.niths.services.domain.school.FaddergruppeServiceImpl;
 import main.java.no.niths.services.domain.school.interfaces.FaddergruppeService;
+import main.java.no.niths.services.domain.school.superclass.GenericCrudServiceOperator;
 import main.java.no.niths.views.adapters.FaddergruppeListAdapter;
+import main.java.no.niths.views.fragments.superclasses.RefreshableListFragment;
 import no.niths.android.R;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +28,13 @@ import java.util.List;
  * Time: 15:02
  * To change this template use File | Settings | File Templates.
  */
-public class FaddergruppeListFragment extends ListFragment {
+public class FaddergruppeListFragment extends RefreshableListFragment<Faddergruppe> {
 
     List<Faddergruppe> faddergrupper;
     MainApplication application;
     FaddergruppeListAdapter adapter;
     View headerView;
+    FaddergruppeService service;
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -49,20 +51,14 @@ public class FaddergruppeListFragment extends ListFragment {
     public void onStart() {
         super.onStart();
         application = (MainApplication) getActivity().getApplication();
-        FaddergruppeService faddergruppeService = new FaddergruppeServiceImpl(application);
-        faddergruppeService.getAll(new Response.Listener<List<Faddergruppe>>() {
-                                       @Override
-                                       public void onResponse(List<Faddergruppe> faddergruppes) {
-                                           adapter.setData(faddergruppes);
-                                           adapter.notifyDataSetChanged();
-                                       }
-                                   }, new Response.ErrorListener() {
-                                       @Override
-                                       public void onErrorResponse(VolleyError volleyError) {
-                                           Log.e("VOLLEY_ERROR", volleyError.getLocalizedMessage(), volleyError);
-                                       }
-                                   }
-        );
+        service = new FaddergruppeServiceImpl(application);
+        loadItems(new Response.Listener<List<Faddergruppe>>() {
+            @Override
+            public void onResponse(List<Faddergruppe> fadderGrupper) {
+                adapter.setData(fadderGrupper);
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -77,15 +73,33 @@ public class FaddergruppeListFragment extends ListFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         faddergrupper = new ArrayList<Faddergruppe>();
-        if (headerView == null){
+        if (headerView == null) {
             headerView = getActivity().getLayoutInflater().inflate(R.layout.listview_item_header, null);
         }
 
-        if (getListView().getHeaderViewsCount() ==  0){
+        if (getListView().getHeaderViewsCount() == 0) {
 
             getListView().addHeaderView(headerView);
         }
         adapter = new FaddergruppeListAdapter(inflater.getContext(), R.layout.listview_item_row, faddergrupper, inflater);
         setListAdapter(adapter);
+    }
+
+
+    @Override
+    protected void refreshView(final MenuItem item) {
+        loadItems(new Response.Listener<List<Faddergruppe>>() {
+            @Override
+            public void onResponse(List<Faddergruppe> fadderGrupper) {
+                adapter.setData(fadderGrupper);
+                adapter.notifyDataSetChanged();
+                item.setActionView(null);
+            }
+        });
+    }
+
+    @Override
+    protected GenericCrudServiceOperator<Faddergruppe> getService() {
+        return (GenericCrudServiceOperator<Faddergruppe>) service;
     }
 }

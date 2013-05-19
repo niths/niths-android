@@ -95,6 +95,7 @@
                 android:layout_weight="1"
                 android:clickable="true" android:lines="5"/>
     </LinearLayout>
+
     <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -102,6 +103,7 @@
             android:id="@+id/profile_page_update_button"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/profile_page_descriptiontext_wrapper"
-            android:visibility="visible"/>
+            android:visibility="visible"
+            android:gravity="bottom|left"/>
 
 </RelativeLayout>

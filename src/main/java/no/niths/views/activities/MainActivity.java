@@ -16,12 +16,12 @@
 package main.java.no.niths.views.activities;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -93,6 +93,14 @@ public class MainActivity extends AbstractTokenConsumerActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+
+    @Override
     protected void newTokenAquired() {
         //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -136,6 +144,7 @@ public class MainActivity extends AbstractTokenConsumerActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         if (drawerToggle.onOptionsItemSelected(item)){
             return true;
         }
@@ -149,5 +158,6 @@ public class MainActivity extends AbstractTokenConsumerActivity {
                 .commit();
         setTitle(title);
         sideMenuLayout.closeDrawer(sideMenu);
+
     }
 }
