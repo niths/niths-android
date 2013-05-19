@@ -15,7 +15,6 @@
  */
 package main.java.no.niths.views.activities;
 
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -29,7 +28,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import main.java.no.niths.views.activities.superclasses.AbstractTokenConsumerActivity;
-import main.java.no.niths.views.fragments.Mainpage;
 import no.niths.android.R;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,26 +51,6 @@ public class MainActivity extends AbstractTokenConsumerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activiy);
         context = this;
-
-        //fragments = new ArrayList<Fragment>();
-        //fragments.add(new Mainpage());
-        //final ActionBar actionBar = getActionBar();
-/*
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        mainTab = actionBar.newTab().setText(getString(R.string.hovedside_tab_title)).setTabListener(new TabListener<Mainpage>(this, "mainpage", Mainpage.class));
-        profileTab = actionBar.newTab().setText(getString(R.string.profil_tab_title)).setTabListener(new TabListener<ProfileFragment>(this, "profil", ProfileFragment.class));
-        faddergruppeTab = actionBar.newTab().setText(getString(R.string.faddergrupper_tab_title)).setTabListener(new TabListener<FaddergruppeListFragment>(this, "faddergrupper", FaddergruppeListFragment.class));
-        eventsTab = actionBar.newTab().setText(getString(R.string.events_tab_title)).setTabListener(new TabListener<EventListFragment>(this, "faddergrupper", EventListFragment.class));
-
-        actionBar.addTab(mainTab);
-        actionBar.addTab(profileTab);
-        actionBar.addTab(faddergruppeTab);
-        actionBar.addTab(eventsTab);
-        */
-
-
-
         if (isOnline()){
             refreshToken();
         }
@@ -80,17 +58,21 @@ public class MainActivity extends AbstractTokenConsumerActivity {
         headers = getResources().getStringArray(R.array.side_menu_title);
         fragmentNames = getResources().getStringArray(R.array.side_menu_fragments);
 
-        try {
-            fragments = getFragmentsForNames(fragmentNames);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
+
+        fragments = getFragmentsForNames(fragmentNames);
         sideMenu = (ListView)findViewById(R.id.left_drawer);
         sideMenuLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
+        sideMenuLayout.setDrawerListener(drawerToggle);
+
+
+        sideMenu.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, headers));
+        sideMenu.setOnItemClickListener(new DrawerItemClickListener());
+        sideMenu.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
         drawerToggle = new ActionBarDrawerToggle(
                 this,
                 sideMenuLayout,
@@ -101,21 +83,14 @@ public class MainActivity extends AbstractTokenConsumerActivity {
         ){
             @Override
             public void onDrawerClosed(View drawerView) {
-                getActionBar().setTitle("NITHS");
+                //getActionBar().setTitle("NITHS");
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle("Meny");
+                //getActionBar().setTitle("Meny");
             }
         };
-        sideMenuLayout.setDrawerListener(drawerToggle);
-
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-
-        sideMenu.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, headers));
-        sideMenu.setOnItemClickListener(new DrawerItemClickListener());
 
     }
 
@@ -124,10 +99,18 @@ public class MainActivity extends AbstractTokenConsumerActivity {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    private List<Fragment> getFragmentsForNames(String[] fragmentNames) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    private List<Fragment> getFragmentsForNames(String[] fragmentNames){
         List<Fragment> fragmentList = new ArrayList<Fragment>();
         for (int i = 0; i < fragmentNames.length; i++) {
-            fragmentList.add((Fragment) Class.forName(fragmentNames[i]).newInstance());
+            try {
+                fragmentList.add((Fragment) Class.forName(fragmentNames[i]).newInstance());
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
         return fragmentList;
     }
@@ -141,13 +124,9 @@ public class MainActivity extends AbstractTokenConsumerActivity {
 
         private void selectItem(int position) {
             Fragment selectedFragemnt = fragments.get(position);
-            FragmentManager manager = getFragmentManager();
-            manager.beginTransaction()
-                    .replace(R.id.fragment_continer, selectedFragemnt, headers[position])
-                    .commit();
+            showFragment(selectedFragemnt, headers[position], headers[position]);
+            sideMenu.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             sideMenu.setItemChecked(position, true);
-            setTitle(headers[position]);
-            sideMenuLayout.closeDrawer(sideMenu);
         }
     }
 
@@ -162,8 +141,14 @@ public class MainActivity extends AbstractTokenConsumerActivity {
         if (drawerToggle.onOptionsItemSelected(item)){
             return true;
         }
-
-
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showFragment(Fragment fragment, String tag, String title){
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment, tag)
+                .commit();
+        setTitle(title);
+        sideMenuLayout.closeDrawer(sideMenu);
     }
 }

@@ -30,7 +30,7 @@ public class Mainpage extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        View mainView = inflater.inflate(R.layout.google_activity_layout, null);
+        View mainView = inflater.inflate(R.layout.main_page, null);
         return mainView;
     }
 

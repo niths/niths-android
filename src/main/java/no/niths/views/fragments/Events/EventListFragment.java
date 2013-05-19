@@ -9,7 +9,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import main.java.no.niths.MainApplication;
 import main.java.no.niths.domain.school.Event;
+import main.java.no.niths.services.domain.school.EventServiceImpl;
 import main.java.no.niths.services.domain.school.EventServiceWithVolley;
+import main.java.no.niths.services.domain.school.interfaces.EventService;
 import main.java.no.niths.views.adapters.EventListAdapter;
 import no.niths.android.R;
 
@@ -39,8 +41,8 @@ public class EventListFragment extends ListFragment {
         super.onStart();
         application = (MainApplication) getActivity().getApplication();
         //new FetchFaddergrupperTask().execute();
-        EventServiceWithVolley eventServiceWithVolley = new EventServiceWithVolley((MainApplication) getActivity().getApplication());
-        eventServiceWithVolley.getAll(new Response.Listener<List<Event>>() {
+        EventService eventService = new EventServiceImpl((MainApplication) getActivity().getApplication());
+        eventService.getAll(new Response.Listener<List<Event>>() {
                                           @Override
                                           public void onResponse(List<Event> events) {
                                               adapter.getData().addAll(events);

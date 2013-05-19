@@ -20,11 +20,11 @@ public interface GenericCrudServiceInterface<T> {
 
     void getAll(int startResult, int endResult, Response.Listener<List<T>> listener, Response.ErrorListener errorListener);
 
-    boolean delete(long id);
+    void delete(long id, Response.Listener<T> listener, Response.ErrorListener errorListener);
 
-    void update(T t);
+    void update(T t, Response.Listener<T> listener, Response.ErrorListener errorListener);
 
-    long create(T t);
+    void create(T t, Response.Listener<T> listener, Response.ErrorListener errorListener);
 
 
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -38,6 +39,12 @@ public class FaddergruppeListFragment extends ListFragment {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
+
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         application = (MainApplication) getActivity().getApplication();
@@ -63,6 +70,8 @@ public class FaddergruppeListFragment extends ListFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         faddergrupper = new ArrayList<Faddergruppe>();
+        View headerView = getActivity().getLayoutInflater().inflate(R.layout.listview_item_header, null);
+        getListView().addHeaderView(headerView);
         adapter = new FaddergruppeListAdapter(inflater.getContext(), R.layout.listview_item_row, faddergrupper, inflater);
         setListAdapter(adapter);
 

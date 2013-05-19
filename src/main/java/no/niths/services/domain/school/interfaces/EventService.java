@@ -8,6 +8,6 @@ import java.util.List;
 /**
  * Created by elotin on 18.05.13.
  */
-public interface EventServiceInterface extends GenericCrudServiceInterface<Event> {
+public interface EventService extends GenericCrudServiceInterface<Event> {
 
 }

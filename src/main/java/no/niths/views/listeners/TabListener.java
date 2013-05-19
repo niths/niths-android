@@ -30,7 +30,7 @@ public class TabListener<T extends Fragment> implements ActionBar.TabListener {
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         if(fragment == null) {
             fragment = Fragment.instantiate(activity, tClass.getName());
-            fragmentTransaction.add(R.id.fragment_continer, fragment, tag);
+            fragmentTransaction.add(R.id.fragment_container, fragment, tag);
         } else {
             fragmentTransaction.attach(fragment);
         }

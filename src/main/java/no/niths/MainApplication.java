@@ -7,8 +7,8 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+import android.support.v4.util.LruCache;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import main.java.no.niths.services.TokenBundle;
@@ -25,6 +25,23 @@ public class MainApplication extends Application {
     public static String token;
     private ImageLoader loader;
     private RequestQueue requestQueue;
+    private LruCache<String, Bitmap> mMemoryCache;
+
+    public ImageLoader getImageLoader() {
+        return loader;
+    }
+
+    public void setLoader(ImageLoader loader) {
+        this.loader = loader;
+    }
+
+    public LruCache<String, Bitmap> getmMemoryCache() {
+        return mMemoryCache;
+    }
+
+    public void setmMemoryCache(LruCache<String, Bitmap> mMemoryCache) {
+        this.mMemoryCache = mMemoryCache;
+    }
 
     public RequestQueue getRequestQueue() {
         return requestQueue;
@@ -40,6 +57,29 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         requestQueue = Volley.newRequestQueue(this);
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        final int cacheSize = maxMemory / 8;
+        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                // The cache size will be measured in kilobytes rather than
+                // number of items.
+                return bitmap.getByteCount() / 1024;
+            }
+        };
+        loader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
+            @Override
+            public Bitmap getBitmap(String key) {
+                return mMemoryCache.get(key);
+            }
+
+            @Override
+            public void putBitmap(String key, Bitmap bitmap) {
+                if (getBitmap(key) == null) {
+                    mMemoryCache.put(key, bitmap);
+                }
+            }
+        });
     }
 
     public boolean isOnline() {
