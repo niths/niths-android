@@ -66,9 +66,6 @@ public class MainActivity extends AbstractTokenConsumerActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
-        sideMenuLayout.setDrawerListener(drawerToggle);
-
-
         sideMenu.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, headers));
         sideMenu.setOnItemClickListener(new DrawerItemClickListener());
         sideMenu.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -91,6 +88,7 @@ public class MainActivity extends AbstractTokenConsumerActivity {
                 //getActionBar().setTitle("Meny");
             }
         };
+        sideMenuLayout.setDrawerListener(drawerToggle);
 
     }
 
@@ -147,6 +145,7 @@ public class MainActivity extends AbstractTokenConsumerActivity {
     public void showFragment(Fragment fragment, String tag, String title){
         getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment, tag)
+                .addToBackStack(null)
                 .commit();
         setTitle(title);
         sideMenuLayout.closeDrawer(sideMenu);

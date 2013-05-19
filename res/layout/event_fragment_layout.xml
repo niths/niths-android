@@ -6,23 +6,29 @@
               android:layout_height="match_parent">
 
     <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
             android:text="Programmering i Android for nybegynnere"
-            android:id="@+id/textView" android:layout_gravity="center"/>
+            style="@style/details_view"
+            android:id="@+id/event_detail_header_textview"/>
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Your bones don't break, mine do. That's clear. Your cells react to bacteria and viruses differently than mine. You don't get sick, I do. That's also clear. But for some reason, you and I react the exact same way to water. We swallow it too fast, we choke. We get some in our lungs, we drown. However unreal it may seem, we are connected, you and I. We're on the same curve, just on opposite ends.  Your bones don't break, mine do. That's clear. Your cells react to bacteria and viruses differently than mine. You don't get sick, I do. That's also clear. But for some reason, you and I react the exact same way to water. We swallow it too fast, we choke. We get some in our lungs, we drown. However unreal it may seem, we are connected, you and I. We're on the same curve, just on opposite ends."
-            android:id="@+id/textView2" android:layout_gravity="left|center_vertical"/>
+            style="@style/details_view"
+            android:text="Your bones don't break, mine do. That's clear. Your cells react to bacteria and viruses differently than mine. You don't gee way to water. We swallow it too fast, we choke. We get some in our lungs, we drown. However unreal it may seem, we are connected, you and I. We're on the same curve, just on opposite ends.  Your bones don't break, mine do. That's clear. Your cells react to bacteria and viruses differently than mine. You don't get sick, I do. That's also clear. But for some reason, you and I react the exact same way to water. We swallow it too fast, we choke. We get some in our lungs, we drown. However unreal it may seem, we are connected, you and I. We're on the same curve, just on opposite ends."
+            android:id="@+id/event_detail_description_textview" />
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/details_view"
             android:text="Start: 12:04, 2013"
-            android:id="@+id/textView3" android:layout_gravity="left|center_vertical"/>
+            android:id="@+id/event_detail_starttime_textview"/>
     <TextView
+            style="@style/details_view"
+            android:text="Slutt: 15:04, 2013"
+            android:id="@+id/event_detail_endtime_textview"/>
+    <TextView
+            style="@style/details_view"
+            android:text="NITH"
+            android:id="@+id/event_detail_location_text"/>
+    <Button
+            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Slutt: 15:04, 2013"
-            android:id="@+id/textView4" android:layout_gravity="left|center_vertical"/>
+            android:text="Vis i kart"
+            android:id="@+id/event_detail_showmap_button" android:layout_gravity="left|center_vertical"/>
 </LinearLayout>

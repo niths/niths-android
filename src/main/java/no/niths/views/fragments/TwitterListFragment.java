@@ -9,12 +9,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import main.java.no.niths.MainApplication;
-import main.java.no.niths.domain.school.Event;
 import main.java.no.niths.domain.twitter.NITHTwitterFetcher;
 import main.java.no.niths.domain.twitter.Tweet;
 import main.java.no.niths.domain.twitter.TwitterWrapper;
-import main.java.no.niths.services.domain.school.EventServiceWithVolley;
-import main.java.no.niths.views.adapters.EventListAdapter;
 import main.java.no.niths.views.adapters.TwitterListAdapter;
 import no.niths.android.R;
 

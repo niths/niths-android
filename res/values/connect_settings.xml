@@ -8,4 +8,5 @@
     <string name="account_type">no.nith</string>
     <string name="google_auth_scope">oauth2:https://www.googleapis.com/auth/userinfo.email</string>
     <string name="NITH_EMAIL_KEY">NITH_EMAIL_KEY</string>
+    <string name="NITH_TWITTER_TAG">#NITHutdanning</string>
 </resources>

@@ -32,6 +32,7 @@ public class FaddergruppeListFragment extends ListFragment {
     List<Faddergruppe> faddergrupper;
     MainApplication application;
     FaddergruppeListAdapter adapter;
+    View headerView;
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -65,15 +66,26 @@ public class FaddergruppeListFragment extends ListFragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        setListAdapter(null);
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         faddergrupper = new ArrayList<Faddergruppe>();
-        View headerView = getActivity().getLayoutInflater().inflate(R.layout.listview_item_header, null);
-        getListView().addHeaderView(headerView);
+        if (headerView == null){
+            headerView = getActivity().getLayoutInflater().inflate(R.layout.listview_item_header, null);
+        }
+
+        if (getListView().getHeaderViewsCount() ==  0){
+
+            getListView().addHeaderView(headerView);
+        }
         adapter = new FaddergruppeListAdapter(inflater.getContext(), R.layout.listview_item_row, faddergrupper, inflater);
         setListAdapter(adapter);
-
     }
 }

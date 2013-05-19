@@ -7,16 +7,12 @@ import main.java.no.niths.MainApplication;
 import main.java.no.niths.services.TokenBundle;
 import main.java.no.niths.services.domain.school.interfaces.GenericCrudServiceInterface;
 import main.java.no.niths.services.utils.GsonRequestBuilder;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Type;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -48,7 +44,7 @@ public abstract class GenericCrudServiceOperator<T> implements GenericCrudServic
         builder.setUrl(getEndpoint())
                 .setListener(listener)
                 .setErrorListener(errorListener)
-        .setType(getListType());
+                .setType(getListType());
         getFromBuilder(builder);
     }
 
@@ -59,13 +55,12 @@ public abstract class GenericCrudServiceOperator<T> implements GenericCrudServic
         builder.setUrl(url)
                 .setListener(listener)
                 .setErrorListener(errorListener)
-        .setType(getListType());
+                .setType(getListType());
         getFromBuilder(builder);
     }
 
     private void getFromBuilder(GsonRequestBuilder builder) {
-        builder.setType(getListType())
-        .setMethod(Request.Method.GET)
+        builder.setMethod(Request.Method.GET)
                 .setHeaders(mapHeaders)
                 .createGsonRequest();
         queue.add(builder.createGsonRequest());
@@ -81,6 +76,8 @@ public abstract class GenericCrudServiceOperator<T> implements GenericCrudServic
                 .setErrorListener(errorListener)
                 .setType(getType());
         getFromBuilder(builder);
+        queue.add(builder.createGsonRequest());
+        queue.start();
     }
 
     @Override
