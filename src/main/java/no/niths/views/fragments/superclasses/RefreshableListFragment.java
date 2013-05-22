@@ -42,15 +42,17 @@ public abstract class RefreshableListFragment<T> extends ListFragment {
         return super.onOptionsItemSelected(item);
     }
 
+
+    /*
+    If you are not interested in listening for errors you can use this.
+     */
     protected void loadItems(Response.Listener<List<T>> listener) {
+        loadItems(listener, null);
+    }
+
+    protected void loadItems(Response.Listener<List<T>> listener, Response.ErrorListener errorListener){
         GenericCrudServiceOperator<T> service = getService();
-        service.getAll(listener, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                Log.e("VOLLEY_ERROR", volleyError.getLocalizedMessage(), volleyError);
-            }
-        }
-        );
+        service.getAll(listener, errorListener);
     }
 
     protected abstract void refreshView(final MenuItem item);

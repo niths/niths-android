@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,12 +23,13 @@ import main.java.no.niths.domain.school.Event;
 import main.java.no.niths.services.domain.school.EventServiceImpl;
 import main.java.no.niths.services.domain.school.interfaces.EventService;
 import main.java.no.niths.views.fragments.NithsMapFragment;
+import main.java.no.niths.views.fragments.superclasses.RefreshableFragment;
 import no.niths.android.R;
 
 /**
  * Created by elotin on 19.05.13.
  */
-public class ShowEventFragment extends Fragment {
+public class ShowEventFragment extends RefreshableFragment {
 
     public final static String EVENT_ID_KEY = "event_id";
     private final static int
@@ -194,6 +196,19 @@ public class ShowEventFragment extends Fragment {
             }
         }
         return false;
+    }
+
+    @Override
+    protected void refreshView(final MenuItem item) {
+        item.setActionView(R.layout.actionbar_indeterminate_progress);
+        title.setText("loading");
+        eventService.getById(id, new Response.Listener<Event>() {
+            @Override
+            public void onResponse(Event event) {
+                showEvent();
+                item.setActionView(null);
+            }
+        }, null);
     }
 
     // Define a DialogFragment that displays the error dialog

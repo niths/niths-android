@@ -38,6 +38,6 @@ public abstract class RefreshableFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    protected abstract void refreshView(MenuItem item);
+    protected abstract void refreshView(final MenuItem item);
 
 }
