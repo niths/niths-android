@@ -2,25 +2,25 @@ package main.java.no.niths.views.fragments.Events;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.ListFragment;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import main.java.no.niths.MainApplication;
 import main.java.no.niths.domain.school.Event;
 import main.java.no.niths.services.domain.school.EventServiceImpl;
 import main.java.no.niths.services.domain.school.interfaces.EventService;
 import main.java.no.niths.services.domain.school.superclass.GenericCrudServiceOperator;
 import main.java.no.niths.views.adapters.EventListAdapter;
-import main.java.no.niths.views.fragments.superclasses.RefreshableFragment;
 import main.java.no.niths.views.fragments.superclasses.RefreshableListFragment;
 import no.niths.android.R;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -75,9 +75,6 @@ public class EventListFragment extends RefreshableListFragment<Event> {
         setListAdapter(adapter);
 
     }
-
-
-
 
     @Override
     protected void refreshView(final MenuItem item) {

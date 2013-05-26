@@ -1,27 +1,16 @@
 package main.java.no.niths.domain.school;
 
-import main.java.no.niths.domain.DomainObject;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
-
 import java.util.List;
 
-/**
- * Created by elotin on 18.05.13.
- */
-@JsonIgnoreProperties(ignoreUnknown = true)
+import main.java.no.niths.domain.DomainObject;
+
 public class Location implements DomainObject {
 
-    @JsonProperty
-    private Long id;
-    @JsonProperty
-    private String place;
-    @JsonProperty
-    private Double latitude;
-    @JsonProperty
-    private Double longitude;
-    @JsonProperty
 
+    private Long id;
+    private String place;
+    private Double latitude;
+    private Double longitude;
     private List<Event> events;
 
     public List<Event> getEvents() {

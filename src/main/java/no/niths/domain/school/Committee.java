@@ -1,10 +1,8 @@
 package main.java.no.niths.domain.school;
 
-import main.java.no.niths.domain.DomainObject;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
-
 import java.util.List;
+
+import main.java.no.niths.domain.DomainObject;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,20 +12,15 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class Committee implements DomainObject {
 
-    @JsonProperty
+
     private long id;
-    @JsonProperty
     private String name;
-    @JsonProperty
     private String description;
-    @JsonProperty
     private List<Student> leaders;
-    @JsonProperty
     private List<Event> events;
-    @JsonProperty
     private List<Student> members;
 
     public String getName() {

@@ -1,40 +1,26 @@
 package main.java.no.niths.domain.school;
 
 import com.google.gson.annotations.SerializedName;
-import main.java.no.niths.domain.DomainObject;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
+
 import org.joda.time.DateTime;
 
+import main.java.no.niths.domain.DomainObject;
 
-/**
- * Created with IntelliJ IDEA.
- * User: elotin
- * Date: 14.05.13
- * Time: 21:30
- * To change this template use File | Settings | File Templates.
- */
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class Event implements DomainObject {
 
     @SerializedName("id")
     private long id;
-
     @SerializedName("name")
     private String name;
-
     @SerializedName("description")
     private String description;
-
     @SerializedName("startTime")
     private DateTime startTime;
-
     @SerializedName("endTime")
     private DateTime endTime;
-
     @SerializedName("tags")
     private String tags;
-
     @SerializedName("location")
     private Location location;
 

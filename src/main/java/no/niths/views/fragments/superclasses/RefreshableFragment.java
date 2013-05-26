@@ -1,14 +1,10 @@
 package main.java.no.niths.views.fragments.superclasses;
 
-import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import main.java.no.niths.services.domain.school.superclass.GenericCrudServiceOperator;
 import no.niths.android.R;
 
 import java.util.List;

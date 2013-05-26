@@ -1,16 +1,13 @@
 package main.java.no.niths.views.fragments.superclasses;
 
-import android.app.ListFragment;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import main.java.no.niths.domain.school.Faddergruppe;
-import main.java.no.niths.services.domain.school.FaddergruppeServiceImpl;
-import main.java.no.niths.services.domain.school.interfaces.FaddergruppeService;
 import main.java.no.niths.services.domain.school.superclass.GenericCrudServiceOperator;
 import no.niths.android.R;
 
