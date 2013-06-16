@@ -30,6 +30,7 @@ import java.util.List;
  */
 public class FaddergruppeListFragment extends RefreshableListFragment<Faddergruppe> {
 
+    public final static String FRAGMENT_TAG = "SHOW_EVENT_FRAGMENT";
     List<Faddergruppe> faddergrupper;
     MainApplication application;
     FaddergruppeListAdapter adapter;
@@ -51,7 +52,7 @@ public class FaddergruppeListFragment extends RefreshableListFragment<Faddergrup
     public void onStart() {
         super.onStart();
         application = (MainApplication) getActivity().getApplication();
-        service = new FaddergruppeServiceImpl(application);
+        service = new FaddergruppeServiceImpl(application.getTokenBundle(), application.getRequestQueue(), application.getApplicationContext());
         loadItems(new Response.Listener<List<Faddergruppe>>() {
             @Override
             public void onResponse(List<Faddergruppe> fadderGrupper) {

@@ -1,7 +1,8 @@
 package main.java.no.niths.views.fragments.superclasses;
 
-import android.app.ListFragment;
+
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;

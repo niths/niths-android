@@ -1,13 +1,13 @@
 package main.java.no.niths.views.fragments;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +34,8 @@ import no.niths.android.R;
  * To change this template use File | Settings | File Templates.
  */
 public class ProfileFragment extends Fragment {
+    public final static String FRAGMENT_TAG = "SHOW_PROFILE_FRAGMENT";
+
     protected static final String TAG = ProfileFragment.class.getSimpleName();
     AbstractTokenConsumerActivity activity;
     private ProgressDialog progressDialog;
@@ -88,9 +90,9 @@ public class ProfileFragment extends Fragment {
                             }
                         });
                 update.setOnClickListener(new View.OnClickListener() {
+                    StudentsService studentsService = new StudentsServiceImpl(application.getTokenBundle(), application.getRequestQueue(), application.getApplicationContext());
                     @Override
                     public void onClick(View view) {
-                        StudentsService studentsService = new StudentsServiceImpl(application);
                         studentsService.getById(29, new Response.Listener<Student>() {
                                     @Override
                                     public void onResponse(Student students) {

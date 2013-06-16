@@ -11,6 +11,6 @@
         <item>main.java.no.niths.views.fragments.TwitterListFragment</item>
         <item>main.java.no.niths.views.fragments.ProfileFragment</item>
         <item>main.java.no.niths.views.fragments.faddergruppe.FaddergruppeListFragment</item>
-        <item>main.java.no.niths.views.fragments.Events.EventListFragment</item>
+        <item>main.java.no.niths.views.fragments.Events.MainEventFragment</item>
     </string-array>
 </resources>

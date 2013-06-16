@@ -1,10 +1,15 @@
 package main.java.no.niths.services.domain.school;
 
+import android.content.Context;
+
+import com.android.volley.RequestQueue;
 import com.google.gson.reflect.TypeToken;
 import main.java.no.niths.MainApplication;
 import main.java.no.niths.domain.school.Event;
+import main.java.no.niths.services.TokenBundle;
 import main.java.no.niths.services.domain.school.interfaces.EventService;
 import main.java.no.niths.services.domain.school.superclass.GenericCrudServiceOperator;
+import no.niths.android.R;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -14,10 +19,11 @@ import java.util.Collection;
  */
 public class EventServiceImpl extends GenericCrudServiceOperator<Event> implements EventService {
 
-    public static String ENDPOINTURL = "http://hmeide.com:8085/events";
+    public static String ENDPOINTURL;
 
-    public EventServiceImpl(MainApplication application) {
-        super(application);
+    public EventServiceImpl(TokenBundle tokens, RequestQueue queue, Context context) {
+        super(tokens, queue);
+        ENDPOINTURL = context.getString(R.string.server_url) + "/events";
 
     }
 

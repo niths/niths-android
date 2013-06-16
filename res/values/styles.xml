@@ -26,5 +26,12 @@
        <item name="android:layout_margin">@dimen/standard_margin</item>
        <item name="android:layout_gravity">center</item>
    </style>
-    <dimen name="standard_text_size">16dp</dimen>
+    <style name="show_whats_going_on_text">
+        <item name="android:textSize">@dimen/standard_text_size</item>
+
+
+    </style>
+
+
+
 </resources>

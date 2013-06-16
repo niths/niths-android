@@ -1,7 +1,7 @@
 package main.java.no.niths.views.fragments;
 
-import android.app.ListFragment;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
@@ -22,6 +22,8 @@ import java.util.List;
  * Created by elotin on 18.05.13.
  */
 public class TwitterListFragment extends ListFragment {
+
+    public final static String FRAGMENT_TAG = "SHOW_TWITTER_LIST_FRAGMENT";
     List<Tweet> tweets;
     MainApplication application;
     TwitterListAdapter adapter;

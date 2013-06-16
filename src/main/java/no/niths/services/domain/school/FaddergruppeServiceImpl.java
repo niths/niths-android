@@ -1,6 +1,9 @@
 package main.java.no.niths.services.domain.school;
 
+import android.content.Context;
 import android.util.Log;
+
+import com.android.volley.RequestQueue;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import main.java.no.niths.MainApplication;
@@ -22,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import main.java.no.niths.services.domain.school.superclass.*;
+import no.niths.android.R;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,10 +36,11 @@ import main.java.no.niths.services.domain.school.superclass.*;
  */
 public class FaddergruppeServiceImpl extends GenericCrudServiceOperator<Faddergruppe> implements FaddergruppeService {
 
-    private String ENDPOINTURL =  "http://hmeide.com:8085/fadder";
+    private String ENDPOINTURL;
 
-    public FaddergruppeServiceImpl(MainApplication application) {
-        super(application);
+    public FaddergruppeServiceImpl(TokenBundle tokens, RequestQueue queue, Context context) {
+        super(tokens, queue);
+        ENDPOINTURL = context.getString(R.string.server_url) + "/fadder";
     }
 
     @Override

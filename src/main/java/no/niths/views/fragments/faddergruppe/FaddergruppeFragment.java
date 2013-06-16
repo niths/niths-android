@@ -10,4 +10,5 @@ import android.app.Fragment;
  * To change this template use File | Settings | File Templates.
  */
 public class FaddergruppeFragment extends Fragment {
+    public final static String FRAGMENT_TAG = "SHOW_FADDERGRUPPE_FRAGMENT";
 }

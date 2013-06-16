@@ -15,8 +15,9 @@
  */
 package main.java.no.niths.views.activities.superclasses;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
+import android.support.v4.app.FragmentActivity;
+
 import main.java.no.niths.MainApplication;
 import main.java.no.niths.views.activities.interfaces.AsyncActivity;
 
@@ -24,7 +25,7 @@ import main.java.no.niths.views.activities.interfaces.AsyncActivity;
  * @author Roy Clarkson
  * @author Pierre-Yves Ricau
  */
-public abstract class AbstractAsyncActivity extends Activity implements AsyncActivity {
+public abstract class AbstractAsyncActivity extends FragmentActivity implements AsyncActivity {
 
     private ProgressDialog progressDialog;
 

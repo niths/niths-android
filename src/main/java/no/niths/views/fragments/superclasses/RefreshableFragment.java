@@ -1,17 +1,13 @@
 package main.java.no.niths.views.fragments.superclasses;
 
-import android.app.Fragment;
+
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import main.java.no.niths.services.domain.school.superclass.GenericCrudServiceOperator;
-import no.niths.android.R;
 
-import java.util.List;
+import no.niths.android.R;
 
 /**
  * Created by elotin on 19.05.13.
@@ -30,7 +26,7 @@ public abstract class RefreshableFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_refresh:
                 item.setActionView(R.layout.actionbar_indeterminate_progress);
                 refreshView(item);

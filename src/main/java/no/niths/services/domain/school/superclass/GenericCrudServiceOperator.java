@@ -23,19 +23,22 @@ import java.util.Map;
  */
 public abstract class GenericCrudServiceOperator<T> implements GenericCrudServiceInterface<T> {
 
+    public Map<String, String> getMapHeaders() {
+        return mapHeaders;
+    }
+
+    public void setMapHeaders(Map<String, String> apHeaders) {
+        mapHeaders = apHeaders;
+    }
+
     Map<String, String> mapHeaders;
     private TokenBundle tokens;
     private RequestQueue queue;
 
-    public GenericCrudServiceOperator(MainApplication application) {
-        mapHeaders = new HashMap<String, String>();
-        tokens = application.getTokenBundle();
-
-        mapHeaders.put("Session-token", tokens.getSessionToken());
-        mapHeaders.put("Developer-token", tokens.getDeveloperToken());
-        mapHeaders.put("Application-token", tokens.getApplicationToken());
+    public GenericCrudServiceOperator(TokenBundle tokens, RequestQueue queue) {
+        mapHeaders = tokens.getAsHeaders();
         mapHeaders.put("Content-Type", "application/json");
-        this.queue = application.getRequestQueue();
+        this.queue = queue;
     }
 
     public void getAll(Response.Listener<List<T>> listener, Response.ErrorListener errorListener) {
@@ -61,7 +64,7 @@ public abstract class GenericCrudServiceOperator<T> implements GenericCrudServic
 
     private void getFromBuilder(GsonRequestBuilder builder) {
         builder.setMethod(Request.Method.GET)
-                .setHeaders(mapHeaders)
+                .setHeaders(getMapHeaders())
                 .createGsonRequest();
         queue.add(builder.createGsonRequest());
         queue.start();

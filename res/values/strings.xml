@@ -16,4 +16,5 @@
     <string name="events_tab_title">Events</string>
     <string name="side_menu_open_description">Open Menu</string>
     <string name="side_menu_close_description">Close Menu</string>
+    <string name="sds">http://hmeide.com:8085/committees</string>
 </resources>

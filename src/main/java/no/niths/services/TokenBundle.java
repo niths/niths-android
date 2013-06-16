@@ -1,5 +1,8 @@
 package main.java.no.niths.services;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created with IntelliJ IDEA.
  * User: elotin
@@ -35,5 +38,13 @@ public class TokenBundle {
 
     public void setApplicationToken(String applicationToken) {
         this.applicationToken = applicationToken;
+    }
+
+    public Map<String, String> getAsHeaders(){
+        Map mapHeaders = new HashMap<String, String>();
+        mapHeaders.put("Session-token", getSessionToken());
+        mapHeaders.put("Developer-token", getDeveloperToken());
+        mapHeaders.put("Application-token", getApplicationToken());
+        return mapHeaders;
     }
 }

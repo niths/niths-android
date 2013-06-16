@@ -35,27 +35,22 @@ public class EventListFragment extends RefreshableListFragment<Event> {
     MainApplication application;
     EventListAdapter adapter;
     EventService eventService;
+    public final static String FRAGMENT_TAG = "EVENT_LIST_FRAGMENT";
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Event selectedEvent = events.get(position);
-        FragmentManager fragmentManager = getFragmentManager();
-        Fragment fragment = new ShowEventFragment(selectedEvent.getId());
-        Bundle fragmentData = new Bundle();
-        fragmentData.putLong("id", selectedEvent.getId());
-        fragment.setArguments(fragmentData);
-        fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment, "show_event")
-                .addToBackStack(null)
-                .commit();
+
+        EventListHandler handler = (EventListHandler) getParentFragment();
+
+        handler.EventItemClicked(events.get(position));
     }
 
     @Override
     public void onStart() {
         super.onStart();
         application = (MainApplication) getActivity().getApplication();
-        eventService = new EventServiceImpl(application);
+        eventService = new EventServiceImpl(application.getTokenBundle(), application.getRequestQueue(), application.getApplicationContext());
         loadItems(new Response.Listener<List<Event>>() {
             @Override
             public void onResponse(List<Event> events) {

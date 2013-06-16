@@ -1,50 +1,19 @@
 package main.java.no.niths.domain.school;
 
 import main.java.no.niths.domain.DomainObject;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
 
-/**
- * Created with IntelliJ IDEA.
- * Student: elotin
- * Date: 10.05.13
- * Time: 12:21
- * To change this template use File | Settings | File Templates.
- */
-
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Student implements DomainObject {
-    @JsonProperty
+
     Long id;
-
-    @JsonProperty
     String firstName;
-
-    @JsonProperty
     String lastName;
-
-    @JsonProperty
     String gender;
-
-    @JsonProperty
     String sessionToken;
-
-    @JsonProperty
     String birthday;
-
-    @JsonProperty
     int grade;
-
-    @JsonProperty
     String email;
-
-    @JsonProperty
     String telephoneNumber;
-
-    @JsonProperty
     String description;
-
-    @JsonProperty
     String lastLogon;
 
     public Long getId() {

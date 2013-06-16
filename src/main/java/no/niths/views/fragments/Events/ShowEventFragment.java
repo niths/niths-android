@@ -1,11 +1,12 @@
 package main.java.no.niths.views.fragments.Events;
 
+
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -13,11 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.gson.Gson;
+
 import main.java.no.niths.MainApplication;
 import main.java.no.niths.domain.school.Event;
 import main.java.no.niths.services.domain.school.EventServiceImpl;
@@ -32,10 +35,11 @@ import no.niths.android.R;
 public class ShowEventFragment extends RefreshableFragment {
 
     public final static String EVENT_ID_KEY = "event_id";
+    public final static String FRAGMENT_TAG = "SHOW_EVENT_FRAGMENT";
     private final static int
             CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-    private Long id;
     EventService eventService;
+    private Long id;
     private Event eventShown;
     private TextView title, description, startTime, endTime, place;
     private Button showMapButton;
@@ -44,12 +48,12 @@ public class ShowEventFragment extends RefreshableFragment {
         this.id = id;
     }
 
+    public ShowEventFragment() {
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-    }
-
-    public ShowEventFragment() {
     }
 
     @Override
@@ -62,18 +66,18 @@ public class ShowEventFragment extends RefreshableFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (getArguments() != null){
         id = getArguments().getLong("id");
-
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             id = savedInstanceState.getLong("id");
         }
+        MainApplication application = (MainApplication) getActivity().getApplication();
 
-
-        eventService = new EventServiceImpl((MainApplication) getActivity().getApplication());
+        eventService = new EventServiceImpl(application.getTokenBundle(), application.getRequestQueue(), application.getApplicationContext());
         eventService.getById(id, new Response.Listener<Event>() {
                     @Override
                     public void onResponse(Event event) {
-                        if(event != null){
+                        if (event != null) {
                             eventShown = event;
                             showEvent();
                         }
@@ -85,11 +89,12 @@ public class ShowEventFragment extends RefreshableFragment {
                     }
                 }
         );
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.event_fragment_layout, null);
+        return inflater.inflate(R.layout.event_fragment_layout_detail, null);
     }
 
     @Override
@@ -120,7 +125,7 @@ public class ShowEventFragment extends RefreshableFragment {
         data.putString(NithsMapFragment.LOCATION_KEY, serializedLocation);
         mapFragment.setArguments(data);
 
-        getFragmentManager().beginTransaction()
+        getChildFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, mapFragment)
                 .addToBackStack(null)
                 .commit();
@@ -202,11 +207,15 @@ public class ShowEventFragment extends RefreshableFragment {
     protected void refreshView(final MenuItem item) {
         item.setActionView(R.layout.actionbar_indeterminate_progress);
         title.setText("loading");
-        eventService.getById(id, new Response.Listener<Event>() {
+        showNewEvent(id);
+    }
+
+    public void showNewEvent(final Long eventId) {
+        title.setText("loading");
+        eventService.getById(eventId, new Response.Listener<Event>() {
             @Override
             public void onResponse(Event event) {
                 showEvent();
-                item.setActionView(null);
             }
         }, null);
     }

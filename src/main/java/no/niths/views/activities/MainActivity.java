@@ -15,11 +15,12 @@
  */
 package main.java.no.niths.views.activities;
 
-import android.app.Fragment;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,10 +28,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import main.java.no.niths.views.activities.superclasses.AbstractTokenConsumerActivity;
-import no.niths.android.R;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import main.java.no.niths.views.activities.superclasses.AbstractTokenConsumerActivity;
+import no.niths.android.R;
 
 /**
  * This class is based on the FacebookActivity by Roy Clarkson
@@ -51,7 +54,7 @@ public class MainActivity extends AbstractTokenConsumerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activiy);
         context = this;
-        if (isOnline()){
+        if (isOnline()) {
             refreshToken();
         }
 
@@ -60,7 +63,7 @@ public class MainActivity extends AbstractTokenConsumerActivity {
 
 
         fragments = getFragmentsForNames(fragmentNames);
-        sideMenu = (ListView)findViewById(R.id.left_drawer);
+        sideMenu = (ListView) findViewById(R.id.left_drawer);
         sideMenuLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -77,7 +80,7 @@ public class MainActivity extends AbstractTokenConsumerActivity {
                 R.string.side_menu_open_description,
                 R.string.side_menu_close_description
 
-        ){
+        ) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 //getActionBar().setTitle("NITHS");
@@ -98,14 +101,12 @@ public class MainActivity extends AbstractTokenConsumerActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-
-
     @Override
     protected void newTokenAquired() {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    private List<Fragment> getFragmentsForNames(String[] fragmentNames){
+    private List<Fragment> getFragmentsForNames(String[] fragmentNames) {
         List<Fragment> fragmentList = new ArrayList<Fragment>();
         for (int i = 0; i < fragmentNames.length; i++) {
             try {
@@ -119,6 +120,30 @@ public class MainActivity extends AbstractTokenConsumerActivity {
             }
         }
         return fragmentList;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void showFragment(Fragment fragment, String tag, String title) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment, tag)
+                .addToBackStack(null)
+                .commit();
+        setTitle(title);
+        sideMenuLayout.closeDrawer(sideMenu);
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -136,28 +161,5 @@ public class MainActivity extends AbstractTokenConsumerActivity {
         }
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        drawerToggle.syncState();
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (drawerToggle.onOptionsItemSelected(item)){
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void showFragment(Fragment fragment, String tag, String title){
-        getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment, tag)
-                .addToBackStack(null)
-                .commit();
-        setTitle(title);
-        sideMenuLayout.closeDrawer(sideMenu);
-
-    }
 }

@@ -1,22 +1,17 @@
 package main.java.no.niths.views.fragments;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -31,15 +26,16 @@ import java.util.ArrayList;
 /**
  * Created by elotin on 19.05.13.
  */
-public class NithsMapFragment extends MapFragment {
-    public static String LOCATION_KEY = "location_key";
-    private GoogleMap map;
-    private Location location;
+public class NithsMapFragment extends SupportMapFragment {
+    public final static String FRAGMENT_TAG = "SHOW_MAP_FRAGMENT";
     private static final int ZOOMLEVEL = 15;
     private static final int ZOOMDURATION = 1000; //1 seconds
     private static final GMapV2Direction G_MAP_V_2_DIRECTION = new GMapV2Direction();
-    private LocationClient locationClient;
+    public static String LOCATION_KEY = "location_key";
     private final Gson gson = new Gson();
+    private GoogleMap map;
+    private Location location;
+    private LocationClient locationClient;
 
     public NithsMapFragment() {
         super();
@@ -59,7 +55,7 @@ public class NithsMapFragment extends MapFragment {
         String locationString = null;
         locationString = getArguments().getString(LOCATION_KEY);
 
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             locationString = savedInstanceState.getString(LOCATION_KEY);
         }
         location = gson.fromJson(locationString, Location.class);
@@ -69,8 +65,8 @@ public class NithsMapFragment extends MapFragment {
         //map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
         //map.animateCamera(CameraUpdateFactory.zoomTo(ZOOMLEVEL), ZOOMDURATION, null);
         map.addMarker(new MarkerOptions()
-        .position(new LatLng(location.getLatitude(), location.getLongitude()))
-        .title(location.getPlace()));
+                .position(new LatLng(location.getLatitude(), location.getLongitude()))
+                .title(location.getPlace()));
         map.setMyLocationEnabled(true);
 
         // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
@@ -85,19 +81,19 @@ public class NithsMapFragment extends MapFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
 
         locationClient = new LocationClient(this.getActivity(), new GooglePlayServicesClient.ConnectionCallbacks() {
             @Override
             public void onConnected(Bundle bundle) {
                 Toast.makeText(getActivity(), "Connected", Toast.LENGTH_SHORT).show();
-                new GetWalkingDirectionsTast().execute();
+                new GetWalkingDirectionsTask().execute();
             }
 
             @Override
             public void onDisconnected() {
-                Toast.makeText(getActivity(), "Disconnected. Please re-connect.",
+                Toast.makeText(getActivity(), "Disconnected. Please re-connect for walking instructions.",
                         Toast.LENGTH_SHORT).show();
             }
         }, new GooglePlayServicesClient.OnConnectionFailedListener() {
@@ -106,37 +102,46 @@ public class NithsMapFragment extends MapFragment {
                 Toast.makeText(getActivity(), "Connection to play failed",
                         Toast.LENGTH_SHORT).show();
             }
-        });
+        }
+        );
         locationClient.connect();
     }
 
-    private class GetWalkingDirectionsTast extends AsyncTask<Void, Void, Document>{
+    private class GetWalkingDirectionsTask extends AsyncTask<Void, Void, Document> {
+        android.location.Location myLocation = locationClient.getLastLocation();
         private LatLng startPos;
         private LatLng endPos;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            android.location.Location myLocation = locationClient.getLastLocation();
-            startPos = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-            endPos =new LatLng(location.getLatitude(), location.getLongitude());
+            myLocation = locationClient.getLastLocation();
+            if (myLocation != null) {
+                startPos = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                endPos = new LatLng(location.getLatitude(), location.getLongitude());
+            }
         }
 
         @Override
         protected Document doInBackground(Void... voids) {
-            return G_MAP_V_2_DIRECTION.getDocument(startPos, endPos, GMapV2Direction.MODE_WALKING);
+            if (myLocation != null) {
+                return G_MAP_V_2_DIRECTION.getDocument(startPos, endPos, GMapV2Direction.MODE_WALKING);
+            }
+            return null;
         }
 
         @Override
         protected void onPostExecute(Document document) {
             super.onPostExecute(document);
-            ArrayList<LatLng> directionPoint = G_MAP_V_2_DIRECTION.getDirection(document);
-            PolylineOptions rectLine = new PolylineOptions().width(3).color(Color.RED);
+            if (myLocation != null) {
+                ArrayList<LatLng> directionPoint = G_MAP_V_2_DIRECTION.getDirection(document);
+                PolylineOptions rectLine = new PolylineOptions().width(3).color(Color.RED);
 
-            for(int i = 0 ; i < directionPoint.size() ; i++) {
-                rectLine.add(directionPoint.get(i));
+                for (int i = 0; i < directionPoint.size(); i++) {
+                    rectLine.add(directionPoint.get(i));
+                }
+                map.addPolyline(rectLine);
             }
-            map.addPolyline(rectLine);
         }
     }
 

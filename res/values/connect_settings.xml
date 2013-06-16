@@ -4,7 +4,7 @@
     <string name="niths_application_token">ccbFpU+1LHxUsv5Mvk621P54E6hS7oJgkhzjBTahe9VCg8VRI+r1aw42cvGyq4y51kewIFs0sXveQmM38EN4kw==</string>
     <string name="google_token_key">google_token</string>
     <string name="niths_token_key">niths_key</string>
-    <string name="server_url">http://hmeide.com:8085</string>
+    <string name="server_url">http://hmeide.com:8080/niths</string>
     <string name="account_type">no.nith</string>
     <string name="google_auth_scope">oauth2:https://www.googleapis.com/auth/userinfo.email</string>
     <string name="NITH_EMAIL_KEY">NITH_EMAIL_KEY</string>

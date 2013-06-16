@@ -1,12 +1,13 @@
 package main.java.no.niths.views.activities.superclasses;
 
 import android.accounts.*;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
+
 import main.java.no.niths.MainApplication;
 import no.niths.android.R;
 
@@ -50,7 +51,7 @@ public abstract class AbstractTokenConsumerActivity extends AbstractAsyncActivit
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != Activity.RESULT_CANCELED) {
+        if (resultCode != FragmentActivity.RESULT_CANCELED) {
             if (requestCode != ACCOUNTSELECT_CODE) {
                 refreshToken();
             } else {
